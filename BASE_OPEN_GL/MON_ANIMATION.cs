@@ -24,19 +24,22 @@ namespace BASE_OPEN_GL
   // elle est utile pour initialiser des éléments globaux à l'application
 		static void Initialisation_Animation()
 		{
+			Random Generateur = new Random();
+			int valeur_random = Generateur.Next(-14, 10);
+
 			Angle_Rotation = 0;
-			Position_Cube_X = 0;
-			Position_Cube_Y = 0;
+			Position_Cube_X = valeur_random;
+			Position_Cube_Y = valeur_random;
 			Vert_Pur = new float[4]{ 0.0f, 1.0f, 0.0f, 1}; // vert pur
 			Le_Message = "voici un texte";
 		}
-
 
 
 		//==========================================================
 		// Cette fonction est invoquée par OpenGl chaque fois que l'on demande un glutPostRedisplay();
 		static void Afficher_Ma_Scene()
 		{
+
 			//.... DEBUT DE NE PAS TOUCHER
 			Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT | Gl.GL_STENCIL_BUFFER_BIT);   // Effacer les buffer d'affichage, de profondeur et de masque
 			Gl.glMatrixMode(Gl.GL_MODELVIEW);  // choisir la matrice de vue
@@ -53,7 +56,7 @@ namespace BASE_OPEN_GL
 			Gl.glPushMatrix(); // sauvegarde du repère (on est actuellement en 0,0,0
 			 	  Gl.glTranslatef(Position_Cube_X, Position_Cube_Y, 0); // déplacer le repère sur l'axe X et L'axe Y. on ne touche pas au Z
 			 	  Gl.glRotatef(Angle_Rotation, 0, 1.0f, 0); // faire tourner le repère autour de l'axe vertical
-			    Glut.glutSolidCube(2.0f); // afficher un cube de 2 de côté au centre du repère (qui a été déplace et tourné)
+			    Glut.glutSolidSphere(0.5f, 20, 20); // afficher un cube de 2 de côté au centre du repère (qui a été déplace et tourné)
 			Gl.glPopMatrix(); // restitution du repère (on revient donc en 0,0,0)
 
 
@@ -77,6 +80,7 @@ namespace BASE_OPEN_GL
 		// cette fonction est invoquée en boucle par openGl
 		static void Animation_Scene()
 		{
+		
 
 			Angle_Rotation += 0.1f; // on modifie la valeur de l'angle de rotation
 
