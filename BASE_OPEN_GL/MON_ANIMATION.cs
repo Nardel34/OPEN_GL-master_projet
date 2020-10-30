@@ -13,6 +13,8 @@ namespace BASE_OPEN_GL
 		static float Angle_Rotation;
 		static float Position_Cube_X;
 		static float Position_Cube_Y;
+		static float Delta_X = 0.01f;
+		static float Delta_Y = 0.03f;
 
 		static string Le_Message;
 
@@ -25,9 +27,9 @@ namespace BASE_OPEN_GL
 		static void Initialisation_Animation()
 		{
 			Random Generateur = new Random();
-			int valeur_random = Generateur.Next(-14, 10);
+			int valeur_random = Generateur.Next(-10, 10);
 
-			Angle_Rotation = 0;
+			/*Angle_Rotation = 0.2f;*/
 			Position_Cube_X = valeur_random;
 			Position_Cube_Y = valeur_random;
 			Vert_Pur = new float[4]{ 0.0f, 1.0f, 0.0f, 1}; // vert pur
@@ -64,7 +66,7 @@ namespace BASE_OPEN_GL
 			   Gl.glTranslatef(-3.0f, 0, 0);  // on positionne le repère en -3 (horizontal vers la gauche) 0 en vertical et 0 en Z
 			   Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Bleu); // la couleur de dessin est maintenant bleu
 	//			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Vert_Pur); // la couleur de dessin est maintenant vert_pur
-			   Glut.glutSolidSphere(0.5f, 20, 20);  // un sphère au centre du repère (qui a été déplacé)
+			   Glut.glutSolidSphere(1, 20, 20);  // un sphère au centre du repère (qui a été déplacé)
 			Gl.glPopMatrix(); // restitution du repère (on revient donc en 0,0,0)
 
 
@@ -80,12 +82,22 @@ namespace BASE_OPEN_GL
 		// cette fonction est invoquée en boucle par openGl
 		static void Animation_Scene()
 		{
-		
 
-			Angle_Rotation += 0.1f; // on modifie la valeur de l'angle de rotation
+			Position_Cube_X = Position_Cube_X + Delta_X;
+            if (Position_Cube_X > 10 || Position_Cube_X < -10)
+            {
+                Delta_X = -Delta_X;
+            }
 
-			Position_Cube_Y += 0.0025f;  // on modifie la valeur de la position verticale du cube
-			if (Position_Cube_Y > 15) Position_Cube_Y = -15;  // quand le cube est en haut de la fenêtre on le repositionnera en bas
+			Position_Cube_Y = Position_Cube_Y + Delta_Y;
+            if (Position_Cube_Y > 10 || Position_Cube_Y < -10)
+            {
+                Delta_Y = -Delta_Y;
+            }
+
+            /*Angle_Rotation += 0.1f;*/ // on modifie la valeur de l'angle de rotation
+
+			if (Position_Cube_Y > 15) Gl.glPopMatrix();  // quand le cube est en haut de la fenêtre on le repositionnera en bas
 
 			//........NE PAS TOUCHER .......................
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
