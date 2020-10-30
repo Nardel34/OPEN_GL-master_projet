@@ -13,8 +13,11 @@ namespace BASE_OPEN_GL
 		static float Angle_Rotation;
 		static float Position_Cube_X;
 		static float Position_Cube_Y;
-		static float Delta_X = 0.01f;
-		static float Delta_Y = 0.03f;
+
+		static bool first = false;
+		static float Delta_X = 0;
+		static float Delta_Y = 0;
+
 
 		static string Le_Message;
 
@@ -82,6 +85,17 @@ namespace BASE_OPEN_GL
 		// cette fonction est invoquée en boucle par openGl
 		static void Animation_Scene()
 		{
+			if(first == false){
+				Random Generateur = new Random();
+				int valeur_random_direction_X = Generateur.Next(-9, 9);
+				float resultat_X = (float)(valeur_random_direction_X * 0.001);
+
+				int valeur_random_direction_Y = Generateur.Next(-9, 9);
+				float resultat_Y = (float)(valeur_random_direction_Y * 0.001);
+				Delta_X = resultat_X;
+				Delta_Y = resultat_Y;
+				first = true;
+			}
 
 			Position_Cube_X = Position_Cube_X + Delta_X;
             if (Position_Cube_X > 10 || Position_Cube_X < -10)
@@ -109,9 +123,8 @@ namespace BASE_OPEN_GL
 		static void Gestion_Touches_Speciales(int P_Touche, int P_X, int P_Y)
 		{
 			Console.WriteLine($"Touche Spéciale : {P_Touche}. La souris est en {P_X} {P_Y}");
+            
 
-
-	
 			if (P_Touche == 100)  // 100 est le code de la touche <-
 			{
 				Position_Cube_X -= 0.5f;
@@ -140,7 +153,7 @@ namespace BASE_OPEN_GL
 			}
 
 
-	
+			
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
 
 		}
