@@ -9,15 +9,15 @@ namespace BASE_OPEN_GL
 	partial class Program
 	{
 		// vous pouvez mettre vos variables globales ici
-
-		static float Angle_Rotation;
 		static float Position_Cube_X;
 		static float Position_Cube_Y;
+
+		static float Pisition_curseur_X;
+		static float Pisition_curseur_Y;
 
 		static bool first = false;
 		static float Delta_X = 0;
 		static float Delta_Y = 0;
-
 
 		static string Le_Message;
 
@@ -56,26 +56,24 @@ namespace BASE_OPEN_GL
 			//..... FIN DE NE PAS TOUCHER
 			// c'est ici que vous pouvez coder l'affichage d'une frame
 
-
 			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Rouge); // la couleur est choisie pour tout le reste de l'affichage jusqu'à ce que l'on en change
 			Gl.glPushMatrix(); // sauvegarde du repère (on est actuellement en 0,0,0
-			 	  Gl.glTranslatef(Position_Cube_X, Position_Cube_Y, 0); // déplacer le repère sur l'axe X et L'axe Y. on ne touche pas au Z
-			 	  Gl.glRotatef(Angle_Rotation, 0, 1.0f, 0); // faire tourner le repère autour de l'axe vertical
-			    Glut.glutSolidSphere(0.5f, 20, 20); // afficher un cube de 2 de côté au centre du repère (qui a été déplace et tourné)
+			Gl.glTranslatef(Position_Cube_X, Position_Cube_Y, 0); // déplacer le repère sur l'axe X et L'axe Y. on ne touche pas au Z
+			Glut.glutSolidSphere(0.5f, 20, 20); // afficher un cube de 2 de côté au centre du repère (qui a été déplace et tourné)
 			Gl.glPopMatrix(); // restitution du repère (on revient donc en 0,0,0)
 
 
 			Gl.glPushMatrix(); // sauvegarde du repère
-			   Gl.glTranslatef(-3.0f, 0, 0);  // on positionne le repère en -3 (horizontal vers la gauche) 0 en vertical et 0 en Z
-			   Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Bleu); // la couleur de dessin est maintenant bleu
-	//			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Vert_Pur); // la couleur de dessin est maintenant vert_pur
-			   Glut.glutSolidSphere(1, 20, 20);  // un sphère au centre du repère (qui a été déplacé)
+			Gl.glTranslatef(Pisition_curseur_X, Pisition_curseur_Y, 0);  // on positionne le repère en -3 (horizontal vers la gauche) 0 en vertical et 0 en Z
+			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Bleu); // la couleur de dessin est maintenant bleu
+			Glut.glutSolidSphere(1, 20, 20);  // un sphère au centre du repère (qui a été déplacé)
 			Gl.glPopMatrix(); // restitution du repère (on revient donc en 0,0,0)
 
 
 			Gl.glColor3f(0.9f, 0.5f, 0.9f); // choix de la couleur 90% de rouge 50% de vert 90% bleu
 					
-			   OPENGL_Affiche_Chaine(-10, -10, Le_Message); // on affiche un texte en -10,-100 (cette fonction est développée dans Moteur_OpenGl.cs)
+			OPENGL_Affiche_Chaine(-10, -10, Le_Message); // on affiche un texte en -10,-100 (cette fonction est développée dans Moteur_OpenGl.cs)
+
 			//........NE PAS TOUCHER .......................
 			Glut.glutSwapBuffers();
 		}
@@ -87,35 +85,37 @@ namespace BASE_OPEN_GL
 		{
 			if(first == false){
 				Random Generateur = new Random();
-				int valeur_random_direction_X = Generateur.Next(-9, 9);
-				float resultat_X = (float)(valeur_random_direction_X * 0.001);
+				int valeur_random_direction_X = Generateur.Next(-2000, 2000);
+				float resultat_X = (float)(valeur_random_direction_X * 0.00001);
 
-				int valeur_random_direction_Y = Generateur.Next(-9, 9);
-				float resultat_Y = (float)(valeur_random_direction_Y * 0.001);
+				int valeur_random_direction_Y = Generateur.Next(-2000, 2000);
+				float resultat_Y = (float)(valeur_random_direction_Y * 0.00001);
+
 				Delta_X = resultat_X;
 				Delta_Y = resultat_Y;
+
 				first = true;
 			}
 
 			Position_Cube_X = Position_Cube_X + Delta_X;
-            if (Position_Cube_X > 10 || Position_Cube_X < -10)
+            if (Position_Cube_X > 14.5f || Position_Cube_X < -14.5f)
             {
                 Delta_X = -Delta_X;
             }
 
 			Position_Cube_Y = Position_Cube_Y + Delta_Y;
-            if (Position_Cube_Y > 10 || Position_Cube_Y < -10)
+            if (Position_Cube_Y > 10.7f || Position_Cube_Y < -11)
             {
                 Delta_Y = -Delta_Y;
             }
 
-            /*Angle_Rotation += 0.1f;*/ // on modifie la valeur de l'angle de rotation
 
-			if (Position_Cube_Y > 15) Gl.glPopMatrix();  // quand le cube est en haut de la fenêtre on le repositionnera en bas
+			/*Angle_Rotation += 0.1f;*/ // on modifie la valeur de l'angle de rotation
 
 			//........NE PAS TOUCHER .......................
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
 		}
+		
 
 		//======================================================================
 		// cette fonction est invoquée par OpenGl lorsqu'on appuie sur une touche spéciale (flèches, Fx, ...)
@@ -188,14 +188,16 @@ namespace BASE_OPEN_GL
 		// les coordonnées de la souris ont dans P_X et P_Y
 		static void Gestion_Souris_Libre(int P_X, int P_Y)
 		{
-		//	Console.WriteLine($"Souris libre en {P_X} {P_Y}");
-			Le_Message = $"Souris libre en {P_X} {P_Y}";
+			//	Console.WriteLine($"Souris libre en {P_X} {P_Y}");
+			
 
+            float x = ((P_X / 800.0f) * 2.0f - 1.0f);
+			float y = -((P_Y / 600.0f) * 2.0f - 1.0f);
+			Pisition_curseur_Y = y * 15.0f;
+			Pisition_curseur_X = x * 15.0f;
 
-			 Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
-
+			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
 		}
-
 
 		//====================================================================
 		// cette fonction est invoquée par OpenGl lorsqu'on bouge la souris tout en appuyant sur un bouton
@@ -205,7 +207,6 @@ namespace BASE_OPEN_GL
 			Le_Message=$"Souris cliqué en {P_X} {P_Y}";
 
 			 Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
-
 		}
 
 
