@@ -9,11 +9,12 @@ namespace BASE_OPEN_GL
 	partial class Program
 	{
 		// vous pouvez mettre vos variables globales ici
+		static int compteur = 0;
 		static float Position_Cube_X;
 		static float Position_Cube_Y;
 
-		static float Pisition_curseur_X;
-		static float Pisition_curseur_Y;
+		static float Position_curseur_X;
+		static float Position_curseur_Y;
 
 		static bool first = false;
 		static float Delta_X = 0;
@@ -64,7 +65,7 @@ namespace BASE_OPEN_GL
 
 
 			Gl.glPushMatrix(); // sauvegarde du repère
-			Gl.glTranslatef(Pisition_curseur_X, Pisition_curseur_Y, 0);  // on positionne le repère en -3 (horizontal vers la gauche) 0 en vertical et 0 en Z
+			Gl.glTranslatef(Position_curseur_X, Position_curseur_Y, 0);  // on positionne le repère en -3 (horizontal vers la gauche) 0 en vertical et 0 en Z
 			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Bleu); // la couleur de dessin est maintenant bleu
 			Glut.glutSolidSphere(1, 20, 20);  // un sphère au centre du repère (qui a été déplacé)
 			Gl.glPopMatrix(); // restitution du repère (on revient donc en 0,0,0)
@@ -109,6 +110,13 @@ namespace BASE_OPEN_GL
                 Delta_Y = -Delta_Y;
             }
 
+			if ((double)Position_Cube_X > (double)Position_curseur_X - 0.300000011920929 && (double)Position_Cube_X < (double)Position_curseur_X + 0.300000011920929 && ((double)Position_Cube_Y > (double)Position_curseur_Y - 0.300000011920929 && (double)Position_Cube_Y < (double)Position_curseur_Y + 0.300000011920929))
+			{
+				compteur++;
+				Position_Cube_X = 0.0f; Position_Cube_Y = 0.0f;
+			}
+
+			Le_Message = $"Score : {compteur}";
 
 			/*Angle_Rotation += 0.1f;*/ // on modifie la valeur de l'angle de rotation
 
@@ -151,8 +159,6 @@ namespace BASE_OPEN_GL
 			{
 				Glut.glutLeaveMainLoop();
 			}
-
-
 			
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
 
@@ -193,8 +199,8 @@ namespace BASE_OPEN_GL
 
             float x = ((P_X / 800.0f) * 2.0f - 1.0f);
 			float y = -((P_Y / 600.0f) * 2.0f - 1.0f);
-			Pisition_curseur_Y = y * 15.0f;
-			Pisition_curseur_X = x * 15.0f;
+			Position_curseur_X = x * 15.0f;
+			Position_curseur_Y = y * 15.0f;
 
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
 		}
