@@ -10,33 +10,53 @@ namespace BASE_OPEN_GL
 	{
 		// vous pouvez mettre vos variables globales ici
 		static int compteur = 0;
-		static float Position_Cube_X;
-		static float Position_Cube_Y;
 
 		static float Position_curseur_X;
 		static float Position_curseur_Y;
 
-		static bool first = false;
-		static float Delta_X = 0;
-		static float Delta_Y = 0;
+		static float[] Position_Cubes_X = new float[5];
+		static float[] Position_Cubes_Y = new float[5];
+		static float[] Delta_X = new float[5];
+		static float[] Delta_Y = new float[5];
+
 
 		static string Le_Message;
 
 		static float[] Rouge = new float[4] { 0.8f, 0.2f, 0.2f, 1 };  // ce tableau représente une couleur composée de 80% de rouge, 20% de Bleu et 20% vert. La dernière valeur doit être 1
 		static float[] Bleu = new float[4] { 0.2f, 0.2f, 0.8f, 1 };   // ce tableau représente une couleur composée de 20% de rouge, 20% de Bleu et 80% vert. La dernière valeur doit être 1
-		static float[] Vert_Pur;
+
 		//==========================================================
-  // Cette fonction est invoquée qu'une seule fois avant que le moteur OpenGl travaille.
-  // elle est utile pour initialiser des éléments globaux à l'application
+		// Cette fonction est invoquée qu'une seule fois avant que le moteur OpenGl travaille.
+		// elle est utile pour initialiser des éléments globaux à l'application
 		static void Initialisation_Animation()
 		{
-			Random Generateur = new Random();
-			int valeur_random = Generateur.Next(-10, 10);
 
-			/*Angle_Rotation = 0.2f;*/
-			Position_Cube_X = valeur_random;
-			Position_Cube_Y = valeur_random;
-			Vert_Pur = new float[4]{ 0.0f, 1.0f, 0.0f, 1}; // vert pur
+			//.......................Apparition aléatoire des ballese.......................
+			Random Generateur = new Random();
+			for (int i = 0; i <= 4; i++)
+			{
+				int valeur_random = Generateur.Next(-10, 10);
+
+				Position_Cubes_X[i] = valeur_random;
+				Position_Cubes_Y[i] = valeur_random;
+			}
+
+
+			//.......................Trajectoire aléatoire.......................
+			for (int i = 0; i <= 4; i++)
+			{
+
+				int valeur_random_direction_X = Generateur.Next(-2000, 2000);
+				float resultat_X = (float)(valeur_random_direction_X * 0.00001);
+
+				int valeur_random_direction_Y = Generateur.Next(-2000, 2000);
+				float resultat_Y = (float)(valeur_random_direction_Y * 0.00001);
+
+				Delta_X[i] = resultat_X;
+				Delta_Y[i] = resultat_Y;
+			}
+
+
 			Le_Message = "voici un texte";
 		}
 
@@ -57,11 +77,14 @@ namespace BASE_OPEN_GL
 			//..... FIN DE NE PAS TOUCHER
 			// c'est ici que vous pouvez coder l'affichage d'une frame
 
-			Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Rouge); // la couleur est choisie pour tout le reste de l'affichage jusqu'à ce que l'on en change
-			Gl.glPushMatrix(); // sauvegarde du repère (on est actuellement en 0,0,0
-			Gl.glTranslatef(Position_Cube_X, Position_Cube_Y, 0); // déplacer le repère sur l'axe X et L'axe Y. on ne touche pas au Z
-			Glut.glutSolidSphere(0.5f, 20, 20); // afficher un cube de 2 de côté au centre du repère (qui a été déplace et tourné)
-			Gl.glPopMatrix(); // restitution du repère (on revient donc en 0,0,0)
+			for (int i = 0; i <= 4; i++)
+			{
+				Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, Rouge); // la couleur est choisie pour tout le reste de l'affichage jusqu'à ce que l'on en change
+				Gl.glPushMatrix(); // sauvegarde du repère (on est actuellement en 0,0,0
+				Gl.glTranslatef(Position_Cubes_X[i], Position_Cubes_Y[i], 0); // déplacer le repère sur l'axe X et L'axe Y. on ne touche pas au Z
+				Glut.glutSolidSphere(0.5f, 20, 20); // afficher un cube de 2 de côté au centre du repère (qui a été déplace et tourné)
+				Gl.glPopMatrix(); // restitution du repère (on revient donc en 0,0,0)
+			}
 
 
 			Gl.glPushMatrix(); // sauvegarde du repère
@@ -73,7 +96,7 @@ namespace BASE_OPEN_GL
 
 			Gl.glColor3f(0.9f, 0.5f, 0.9f); // choix de la couleur 90% de rouge 50% de vert 90% bleu
 					
-			OPENGL_Affiche_Chaine(-10, -10, Le_Message); // on affiche un texte en -10,-100 (cette fonction est développée dans Moteur_OpenGl.cs)
+			OPENGL_Affiche_Chaine(-15, 10, Le_Message); // on affiche un texte en -10,-100 (cette fonction est développée dans Moteur_OpenGl.cs)
 
 			//........NE PAS TOUCHER .......................
 			Glut.glutSwapBuffers();
@@ -84,41 +107,32 @@ namespace BASE_OPEN_GL
 		// cette fonction est invoquée en boucle par openGl
 		static void Animation_Scene()
 		{
-			if(first == false){
-				Random Generateur = new Random();
-				int valeur_random_direction_X = Generateur.Next(-2000, 2000);
-				float resultat_X = (float)(valeur_random_direction_X * 0.00001);
-
-				int valeur_random_direction_Y = Generateur.Next(-2000, 2000);
-				float resultat_Y = (float)(valeur_random_direction_Y * 0.00001);
-
-				Delta_X = resultat_X;
-				Delta_Y = resultat_Y;
-
-				first = true;
-			}
-
-			Position_Cube_X = Position_Cube_X + Delta_X;
-            if (Position_Cube_X > 14.5f || Position_Cube_X < -14.5f)
-            {
-                Delta_X = -Delta_X;
-            }
-
-			Position_Cube_Y = Position_Cube_Y + Delta_Y;
-            if (Position_Cube_Y > 10.7f || Position_Cube_Y < -11)
-            {
-                Delta_Y = -Delta_Y;
-            }
-
-			if ((double)Position_Cube_X > (double)Position_curseur_X - 0.300000011920929 && (double)Position_Cube_X < (double)Position_curseur_X + 0.300000011920929 && ((double)Position_Cube_Y > (double)Position_curseur_Y - 0.300000011920929 && (double)Position_Cube_Y < (double)Position_curseur_Y + 0.300000011920929))
+			//.......................Rebond de la balle sur les bord.......................
+			for (int i = 0; i <= 4; i++)
 			{
-				compteur++;
-				Position_Cube_X = 0.0f; Position_Cube_Y = 0.0f;
+				Position_Cubes_X[i] = Position_Cubes_X[i] + Delta_X[i];
+				if (Position_Cubes_X[i] > 14.5f || Position_Cubes_X[i] < -14.5f)
+				{
+					Delta_X[i] = -Delta_X[i];
+				}
+
+				Position_Cubes_Y[i] = Position_Cubes_Y[i] + Delta_Y[i];
+				if (Position_Cubes_Y[i] > 10.7f || Position_Cubes_Y[i] < -11)
+				{
+					Delta_Y[i] = -Delta_Y[i];
+				}
 			}
 
+			//.......................Compteur.......................
+			for (int i = 0; i <= 4; i++)
+			{
+				if ((double)Position_Cubes_X[i] > (double)Position_curseur_X - 0.300000011920929 && (double)Position_Cubes_X[i] < (double)Position_curseur_X + 0.300000011920929 && ((double)Position_Cubes_Y[i] > (double)Position_curseur_Y - 0.300000011920929 && (double)Position_Cubes_Y[i] < (double)Position_curseur_Y + 0.300000011920929))
+				{
+					compteur++;
+					Position_Cubes_X[i] = 0.0f; Position_Cubes_Y[i] = 0.0f;
+				}
+			}
 			Le_Message = $"Score : {compteur}";
-
-			/*Angle_Rotation += 0.1f;*/ // on modifie la valeur de l'angle de rotation
 
 			//........NE PAS TOUCHER .......................
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
@@ -133,7 +147,7 @@ namespace BASE_OPEN_GL
 			Console.WriteLine($"Touche Spéciale : {P_Touche}. La souris est en {P_X} {P_Y}");
             
 
-			if (P_Touche == 100)  // 100 est le code de la touche <-
+			/*if (P_Touche == 100)  // 100 est le code de la touche <-
 			{
 				Position_Cube_X -= 0.5f;
 			}
@@ -141,7 +155,7 @@ namespace BASE_OPEN_GL
 			if (P_Touche == 102)  // 102 est le code de la touche ->
 			{
 				Position_Cube_X += 0.5f;
-			}
+			}*/
 
 			//........NE PAS TOUCHER .......................
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
@@ -194,10 +208,9 @@ namespace BASE_OPEN_GL
 		// les coordonnées de la souris ont dans P_X et P_Y
 		static void Gestion_Souris_Libre(int P_X, int P_Y)
 		{
-			//	Console.WriteLine($"Souris libre en {P_X} {P_Y}");
-			
 
-            float x = ((P_X / 800.0f) * 2.0f - 1.0f);
+			//.......................Calcul des coordonné du curseur pour la raquette.......................
+			float x = ((P_X / 800.0f) * 2.0f - 1.0f);
 			float y = -((P_Y / 600.0f) * 2.0f - 1.0f);
 			Position_curseur_X = x * 15.0f;
 			Position_curseur_Y = y * 15.0f;
