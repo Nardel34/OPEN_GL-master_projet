@@ -124,12 +124,14 @@ namespace BASE_OPEN_GL
 			}
 
 			//.......................Compteur.......................
+			Random Generateur = new Random();
+			int valeur_random = Generateur.Next(-10, 10);
 			for (int i = 0; i <= 4; i++)
 			{
 				if ((double)Position_Cubes_X[i] > (double)Position_curseur_X - 0.300000011920929 && (double)Position_Cubes_X[i] < (double)Position_curseur_X + 0.300000011920929 && ((double)Position_Cubes_Y[i] > (double)Position_curseur_Y - 0.300000011920929 && (double)Position_Cubes_Y[i] < (double)Position_curseur_Y + 0.300000011920929))
 				{
 					compteur++;
-					Position_Cubes_X[i] = 0.0f; Position_Cubes_Y[i] = 0.0f;
+					Position_Cubes_X[i] = valeur_random; Position_Cubes_Y[i] = valeur_random;
 				}
 			}
 			Le_Message = $"Score : {compteur}";
