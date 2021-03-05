@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="C_CARRE.cs" />
+    <Compile Include="C_CERCLE.cs" />
+    <Compile Include="C_OBJET_GRAPHIQUE.cs" />
     <Compile Include="MON_ANIMATION.cs" />
     <Compile Include="MOTEUR_OPENGL.cs" />
     <Compile Include="Program.cs" />
