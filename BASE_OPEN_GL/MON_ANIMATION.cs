@@ -10,7 +10,10 @@ namespace BASE_OPEN_GL
 {	
 	partial class Program
 	{
-		static List<C_OBJET_GRAPHIQUE> Liste_objet = new List<C_OBJET_GRAPHIQUE>();
+		static LinkedList<C_OBJET_GRAPHIQUE> Liste_objet = new LinkedList<C_OBJET_GRAPHIQUE>();
+		static LinkedList<C_OBJET_GRAPHIQUE> Liste_objet_A_supprimer = new LinkedList<C_OBJET_GRAPHIQUE>();
+		static C_COMMUNICATION La_Communication = new C_COMMUNICATION();
+
 		static int compteur = 0;
 
 		static float Position_curseur_X;
@@ -64,14 +67,45 @@ namespace BASE_OPEN_GL
 		{
             //.......................Rebond de la balle sur les bord.......................
 
-            foreach (var item in Liste_objet)
-            {
-				item.rebondie_bord();
+			C_OBJET_GRAPHIQUE nouvel_objet = La_Communication.reception();
+			if (nouvel_objet != null)
+			{
+				Liste_objet.AddLast(nouvel_objet);
 			}
 
 
-            //.......................Compteur.......................
-            Random Generateur = new Random();
+			foreach (var un_objet in Liste_objet)
+			{
+				un_objet.Deplace_toi();
+
+				if (un_objet.Situation == POSITION.Est_A_Droite)
+				{
+					un_objet.Rebondi_Horizontalement();
+				}
+				if (un_objet.Situation == POSITION.Est_A_Gauche)
+				{
+					Liste_objet_A_supprimer.AddLast(un_objet);
+					La_Communication.emission(un_objet);
+				}
+				if (un_objet.Situation == POSITION.Est_En_Haut)
+				{
+					un_objet.rebondi_Verticalement();
+				}
+				if (un_objet.Situation == POSITION.Est_En_Bas)
+				{
+					un_objet.rebondi_Verticalement();
+				}
+			}
+
+			foreach (C_OBJET_GRAPHIQUE un_objet_a_supprimer in Liste_objet_A_supprimer)
+			{
+				Liste_objet.Remove(un_objet_a_supprimer);
+			}
+			Liste_objet_A_supprimer.Clear();
+
+
+			//.......................Compteur.......................
+			Random Generateur = new Random();
             int valeur_random_X = Generateur.Next(-10, 10);
 			int valeur_random_Y = Generateur.Next(-10, 10);
 			foreach (var item in Liste_objet)
@@ -109,16 +143,12 @@ namespace BASE_OPEN_GL
 
 			if (P_Touche == 97) // A
 			{
-				C_OBJET_GRAPHIQUE objet1 = new C_CARRE();
-
-				Liste_objet.Add(objet1);
+				Liste_objet.AddFirst(new C_CARRE());
 			}
 
 			if (P_Touche == 122) // Z
 			{
-				C_OBJET_GRAPHIQUE objet2 = new C_CERCLE();
-
-				Liste_objet.Add(objet2);
+				Liste_objet.AddFirst(new C_CERCLE());
 			}
 
 			Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
@@ -129,8 +159,7 @@ namespace BASE_OPEN_GL
 		static void Gestion_Bouton_Souris(int P_Bouton, int P_Etat, int P_X, int P_Y)
 		{
 			Console.WriteLine($"Bouton Souris : {P_Bouton} est {P_Etat}. La souris est en {P_X} {P_Y}");
-			//Le_Message = $"Bouton Souris : {P_Bouton} est {P_Etat}. La souris est en {P_X} {P_Y}";
-
+            //Le_Message = $"Bouton Souris : {P_Bouton} est {P_Etat}. La souris est en {P_X} {P_Y}";
 
 			// Glut.glutPostRedisplay(); // demander d'afficher une Frame (cela invoquera Afficher_Ma_Scene )
 		}

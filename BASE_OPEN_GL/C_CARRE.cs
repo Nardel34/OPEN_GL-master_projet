@@ -10,10 +10,14 @@ namespace BASE_OPEN_GL
 {
     class C_CARRE : C_OBJET_GRAPHIQUE
     {
+        public C_CARRE()
+        {
+            Nature = 1;
+        }
         protected override void dessine_toi()
         {
             Gl.glPushMatrix();
-            Gl.glTranslatef(Position_objet_X, Position_objet_Y, 0);
+            Gl.glTranslatef((float)Position_objet_X, (float)Position_objet_Y, 0);
             Glut.glutSolidCube(1.5f);
             Gl.glPopMatrix();
         }

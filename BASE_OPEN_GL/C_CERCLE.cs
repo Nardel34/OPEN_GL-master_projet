@@ -10,10 +10,14 @@ namespace BASE_OPEN_GL
 {
     class C_CERCLE : C_OBJET_GRAPHIQUE
     {
+        public C_CERCLE()
+        {
+            Nature = 2;
+        }
         protected override void dessine_toi()
         {
             Gl.glPushMatrix();
-            Gl.glTranslatef(Position_objet_X, Position_objet_Y, 0);
+            Gl.glTranslatef((float)Position_objet_X, (float)Position_objet_Y, 0);
             Glut.glutSolidSphere(1, 20, 20);
             Gl.glPopMatrix();
 
